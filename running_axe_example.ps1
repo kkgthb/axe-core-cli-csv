@@ -38,15 +38,16 @@ function Start-AxeScanFromCsv {
             # Resolve paths and prepare output directory
             $inputResolved = [System.IO.Path]::GetFullPath($incsv)
             $outputResolved = [System.IO.Path]::GetFullPath($OutputDir)
-            if (-not (Test-Path $outputResolved)) { New-Item -ItemType Directory -Path $outputResolved | Out-Null }
+            if (-not (Test-Path $outputResolved)) { New-Item -ItemType 'Directory' -Path $outputResolved | Out-Null }
             # Load URLs
             if (-not (Test-Path $inputResolved)) {
                 Write-Error "Input CSV not found: $inputResolved"
                 exit 1
             }
             $csv = Import-Csv -Path $inputResolved
-            if (-not $csv -or -not ($csv | Get-Member -Name URL -MemberType NoteProperty)) {
-                Write-Error "CSV must contain a 'URL' column."
+            $url_column_name = 'URL'
+            if (-not $csv -or -not ($csv | Get-Member -Name $url_column_name -MemberType 'NoteProperty')) {
+                Write-Error "CSV must contain a '$url_column_name' column."
                 exit 1
             }
             $urls = $csv.URL | Where-Object { $_ } | Sort-Object -Unique
