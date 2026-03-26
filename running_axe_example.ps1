@@ -30,17 +30,24 @@ $wcag_scan_types_i_care_about = @(
     'wcag21aa'
 )
 $comma_separated_wcag_types = $wcag_scan_types_i_care_about -Join ','
-$my_desired_report_output_folder_path = [System.IO.Path]::GetFullPath("$PSScriptRoot/axe_output")
-$output_path_resolved = [System.IO.Path]::GetFullPath($my_desired_report_output_folder_path)
+# $my_desired_report_output_folder_path = [System.IO.Path]::GetFullPath("$PSScriptRoot/axe_output") # COMMENTED OUT FOR NOW
+# $output_path_resolved = [System.IO.Path]::GetFullPath($my_desired_report_output_folder_path) # COMMENTED OUT FOR NOW
 $my_input_csv_file_path = "$PSScriptRoot\data\example_urls.csv" # TODO:  CHANGE ME TO WHERE YOUR ACTUAL DATA FILE LIVES ON YOUR HARD DRIVE!
 # $my_input_csv_file_path = 'C:\example\my_urls.csv" # EXAMPLE:  LIKE THIS!
 $csv_path_resolved = [System.IO.Path]::GetFullPath($my_input_csv_file_path)
 $my_data = Import-Csv -Path $csv_path_resolved
 $list_of_urls_to_scan = $my_data.URL
-Write-Host "Beginning Axe scan (note -- this will take a while if you provided a long list of URLs.  You will see another green message after it is done.)" -ForegroundColor Green
-(axe --dir "$output_path_resolved" --tags "$comma_separated_wcag_types" @list_of_urls_to_scan) # THIS ACTUALLY RUNS THE SCAN
-Write-Host "Finished Axe scan (as promised, another green message)." -ForegroundColor Green
+Write-Host "Beginning Axe scan (note -- this will take a while if you provided a long list of URLs.  You will see another green message after it is done.)" -ForegroundColor 'Green'
+# (axe --dir "$output_path_resolved" --tags "$comma_separated_wcag_types" @list_of_urls_to_scan) # THIS ACTUALLY RUNS THE SCAN BUT DUMPS TO JSON # COMMENTED OUT FOR NOW
+(axe --tags "$comma_separated_wcag_types" @list_of_urls_to_scan) # THIS ACTUALLY RUNS THE SCAN, and is concise, but takes forever.  Comment out if you hate that and uncomment the lines below.
+# ForEach ($url in $list_of_urls_to_scan) { 
+#     Write-Host "Scanning URL $url now." -ForegroundColor 'Cyan'
+#     (axe --tags "$comma_separated_wcag_types" $url) # THIS ACTUALLY RUNS THE SCAN
+#     Write-Host "Scan of URL $url completed." -ForegroundColor 'Cyan'
+# } # THIS TAKES LESS TIME PER URL TO SHOW UP, BUT IS MORE VERBOSE TO READ WHEN SCROLLING BACK UP, SO COMMENTED OUT FOR NOW.
+Write-Host "Finished Axe scan.  Scroll back up to see what happened." -ForegroundColor 'Green'
 # --- Main Script above ---
 
-# Hmmmm.  Not happy yet, because Axe charges $45/user/month for access to the NPM package that 
-# beautifies the resulting 300,000-line (from 200 input URLs) JSON output file into HTML a real human would actually understand.  Blegh.
+# I think I prefer native PowerShell output and scrolling back up, since there is no free HTML beautifier of a bulk operation's JSON output available from Deque Axe.
+# ($45/month/user, yikes!)
+# Various community folks have made equivalents, but some enterprise folks might not be allowed to use them, so this demo does not.
