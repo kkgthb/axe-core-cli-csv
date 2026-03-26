@@ -21,8 +21,8 @@ function Assert-AxeCliInstalled {
 
 
 # --- Main Script below ---
-# Assert-NpmInstalled
-# Assert-AxeCliInstalled
+Assert-NpmInstalled
+Assert-AxeCliInstalled
 $wcag_scan_types_i_care_about = @(
     'wcag2a'
     'wcag2aa'
